@@ -274,13 +274,26 @@
         <button onclick="resetStatistics()">Reset Statistics</button>
     </div>
     
-    <div class="controls"></div>
-        <button onclick="setMode('add')" id="addModeBtn">Add Edge Mode</button>
-        <button onclick="setMode('remove')" id="removeModeBtn">Remove Edge Mode</button>
-        <button onclick="setMode('addNode')" id="addNodeModeBtn">Add Node Mode</button>
-        <button onclick="setMode('deleteNode')" id="deleteNodeModeBtn">Delete Node Mode</button>
-        <button onclick="setMode('none')" id="normalModeBtn">Normal Mode</button>
-        <div id="modeIndicator" class="mode-indicator">Normal Mode - Touch edges to remove, touch nodes to add edges, drag nodes to move them</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start;">
+        <div style="flex: 1; min-width: 300px;">
+            <svg id="canvas" width="800" height="600" viewBox="0 0 800 600">
+                <defs>
+                    <marker id="arrowhead" markerWidth="6" markerHeight="4" 
+                            refX="5" refY="2" orient="auto">
+                        <polygon points="0 0, 6 2, 0 4" fill="#aaaaaa"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <div style="flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="setMode('add')" id="addModeBtn">Add Edge Mode</button>
+            <button onclick="setMode('remove')" id="removeModeBtn">Remove Edge Mode</button>
+            <button onclick="setMode('addNode')" id="addNodeModeBtn">Add Node Mode</button>
+            <button onclick="setMode('deleteNode')" id="deleteNodeModeBtn">Delete Node Mode</button>
+            <button onclick="setMode('none')" id="normalModeBtn">Normal Mode</button>
+            <div id="modeIndicator" class="mode-indicator">Normal Mode - Touch edges to remove, touch nodes to add edges, drag nodes to move them</div>
+        </div>
     </div>
     
     <div class="file-controls"></div>
@@ -586,25 +599,28 @@
             
             const pos = getEventPosition(event);
             
-            // Check if touching a node for dragging
-            for (let i = 0; i < nodes.length; i++) {
-                const distance = Math.sqrt(
-                    (pos.x - nodes[i].x) ** 2 + (pos.y - nodes[i].y) ** 2
-                );
-                
-                if (distance <= 25) { // Within node radius
-                    isDragging = true;
-                    dragNodeIndex = i;
-                    dragOffset.x = pos.x - nodes[i].x;
-                    dragOffset.y = pos.y - nodes[i].y;
+            // Only enable dragging in normal mode or when not in add/remove modes
+            if (interactionMode === 'none') {
+                // Check if touching a node for dragging
+                for (let i = 0; i < nodes.length; i++) {
+                    const distance = Math.sqrt(
+                        (pos.x - nodes[i].x) ** 2 + (pos.y - nodes[i].y) ** 2
+                    );
                     
-                    // Update cursor for dragging
-                    const nodeElement = document.getElementById(`node-${i}`);
-                    if (nodeElement) {
-                        nodeElement.classList.add('dragging');
+                    if (distance <= 25) { // Within node radius
+                        isDragging = true;
+                        dragNodeIndex = i;
+                        dragOffset.x = pos.x - nodes[i].x;
+                        dragOffset.y = pos.y - nodes[i].y;
+                        
+                        // Update cursor for dragging
+                        const nodeElement = document.getElementById(`node-${i}`);
+                        if (nodeElement) {
+                            nodeElement.classList.add('dragging');
+                        }
+                        
+                        return;
                     }
-                    
-                    return;
                 }
             }
             
