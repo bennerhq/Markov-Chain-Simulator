@@ -2,7 +2,7 @@
 
 ## Description
 
-A web-based implementation of Markov Chains for text generation and analysis.
+A web-based implementation that designs and simulates Markov chains. Pure fun!
 
 100% VIBE CODING using Claude Sonnet 4
 
